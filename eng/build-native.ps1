@@ -22,7 +22,7 @@ $source = Join-Path $cache "opus-$($opus.version)"
 if (-not (Test-Path (Join-Path $source 'CMakeLists.txt'))) {
     New-Item -ItemType Directory -Force $cache | Out-Null
     $archive = Join-Path $cache 'opus.tar.gz'
-    Invoke-WebRequest $opus.url -OutFile $archive
+    Invoke-WebRequest $opus.url -OutFile $archive -MaximumRetryCount 4 -RetryIntervalSec 3
     $actual = (Get-FileHash $archive -Algorithm SHA256).Hash
     if ($actual -ne $opus.sha256) {
         throw "$($opus.url) hashed to $actual; generate/inputs.json pins $($opus.sha256)."
@@ -41,6 +41,12 @@ $build = Join-Path $root "artifacts/obj/native/$Runtime"
 $configure = @('-S', (Join-Path $root 'native'), '-B', $build, "-DOPUS_SOURCE_DIR=$source",
     "-DCMAKE_BUILD_TYPE=$Configuration")
 $architecture = $Runtime.Split('-')[-1]
+if ($architecture -eq 'arm64') {
+    # NEON is part of AArch64, so it is presumed rather than detected at run time. libopus's CMake build
+    # also adds the DNN run-time dispatch (dnn/arm/arm_dnn_map.c) under detection without the DNN code
+    # it dispatches to, which leaves its symbols unresolved.
+    $configure += @('-DOPUS_PRESUME_NEON=ON', '-DOPUS_MAY_HAVE_NEON=OFF')
+}
 if ($Runtime.StartsWith('win-')) {
     # The C runtime linked in, so the library needs no Visual C++ redistributable.
     $configure += @('-A', @{ x64 = 'x64'; arm64 = 'ARM64'; x86 = 'Win32' }[$architecture],

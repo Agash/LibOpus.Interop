@@ -25,8 +25,8 @@ jobs:
   native:
     name: Native (${{ matrix.rid }})
     runs-on: ${{ matrix.os }}
-    # Linux builds in Debian 11 (glibc 2.31), so the library loads on distributions and SBC images older
-    # than the runner's own.
+    # Linux builds in AlmaLinux 8 (glibc 2.28, the manylinux_2_28 baseline), so the library loads on
+    # distributions and SBC images far older than the runner's own.
     container: ${{ matrix.container }}
     strategy:
       fail-fast: false
@@ -34,16 +34,15 @@ jobs:
         include:
           - { os: windows-latest, rid: win-x64 }
           - { os: windows-11-arm, rid: win-arm64 }
-          - { os: ubuntu-26.04, rid: linux-x64, container: "debian:bullseye" }
-          - { os: ubuntu-26.04-arm, rid: linux-arm64, container: "debian:bullseye" }
+          - { os: ubuntu-26.04, rid: linux-x64, container: "almalinux:8" }
+          - { os: ubuntu-26.04-arm, rid: linux-arm64, container: "almalinux:8" }
           - { os: xcode-27, rid: osx-arm64 }
           - { os: xcode-27, rid: osx-x64 }
     steps:
       - name: Install the C toolchain (Linux)
         if: matrix.container
         run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends ca-certificates curl git gcc make cmake libicu67
+          dnf install -y -q gcc make cmake git tar gzip libicu
 
       - uses: actions/checkout@v7
 

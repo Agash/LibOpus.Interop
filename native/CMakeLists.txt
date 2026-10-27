@@ -22,7 +22,7 @@ target_sources(opus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/opus_interop.c)
 # references to the network functions are left unresolved, which fails the Windows link.
 if(NOT OPUS_DRED AND NOT OPUS_OSCE)
   get_target_property(opus_sources opus SOURCES)
-  list(FILTER opus_sources EXCLUDE REGEX "arm_dnn_map\.c$")
+  list(FILTER opus_sources EXCLUDE REGEX "arm_dnn_map[.]c$")
   set_property(TARGET opus PROPERTY SOURCES ${opus_sources})
 endif()
 

@@ -1,0 +1,108 @@
+# Builds the native library (libopus with the interop entry points, native/CMakeLists.txt) for one
+# runtime from the source pinned in generate/inputs.json, into artifacts/native/<rid>/native, which the
+# project packs under runtimes/<rid>/native and copies beside a consumer's output for this machine.
+#
+#   cmake -P eng/build-native.cmake                       this machine's runtime
+#   cmake -DRUNTIME=win-arm64 -P eng/build-native.cmake   a runtime this machine's toolchain targets
+#
+# It needs CMake 3.22 or later and a C compiler (Visual Studio's C toolset on Windows), and nothing
+# else, so it runs in the old-glibc container the Linux libraries are built in.
+cmake_minimum_required(VERSION 3.22)
+
+get_filename_component(root "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
+if(NOT CONFIGURATION)
+  set(CONFIGURATION Release)
+endif()
+
+if(NOT RUNTIME)
+  cmake_host_system_information(RESULT platform QUERY OS_PLATFORM)
+  string(TOLOWER "${platform}" platform)
+  if(platform MATCHES "^(arm64|aarch64)$")
+    set(architecture arm64)
+  elseif(platform MATCHES "^(amd64|x86_64)$")
+    set(architecture x64)
+  else()
+    message(FATAL_ERROR "No runtime for the ${platform} processor; set RUNTIME.")
+  endif()
+  if(CMAKE_HOST_WIN32)
+    set(RUNTIME win-${architecture})
+  elseif(CMAKE_HOST_APPLE)
+    set(RUNTIME osx-${architecture})
+  else()
+    set(RUNTIME linux-${architecture})
+  endif()
+endif()
+string(REGEX REPLACE "^.*-" "" architecture "${RUNTIME}")
+
+# The pinned source, verified by its SHA-256, extracted once per version.
+file(READ "${root}/generate/inputs.json" inputs)
+string(JSON version GET "${inputs}" opus version)
+string(JSON url GET "${inputs}" opus url)
+string(JSON sha256 GET "${inputs}" opus sha256)
+set(cache "${root}/artifacts/obj/opus-${version}")
+set(source "${cache}/opus-${version}")
+if(NOT EXISTS "${source}/CMakeLists.txt")
+  set(archive "${cache}/opus.tar.gz")
+  foreach(attempt RANGE 1 4)
+    file(DOWNLOAD "${url}" "${archive}" EXPECTED_HASH SHA256=${sha256} STATUS status)
+    list(GET status 0 code)
+    if(code EQUAL 0)
+      break()
+    endif()
+    message(STATUS "Downloading ${url} failed (${status}); attempt ${attempt} of 4.")
+    file(REMOVE "${archive}")
+  endforeach()
+  if(NOT code EQUAL 0)
+    message(FATAL_ERROR "Could not download ${url}: ${status}")
+  endif()
+  file(ARCHIVE_EXTRACT INPUT "${archive}" DESTINATION "${cache}")
+  file(REMOVE "${archive}")
+endif()
+
+set(build "${root}/artifacts/obj/native/${RUNTIME}")
+set(configure -S "${root}/native" -B "${build}" "-DOPUS_SOURCE_DIR=${source}"
+  "-DCMAKE_BUILD_TYPE=${CONFIGURATION}")
+if(RUNTIME MATCHES "^win-")
+  # The C runtime linked in, so the library needs no Visual C++ redistributable.
+  if(architecture STREQUAL "arm64")
+    list(APPEND configure -A ARM64)
+  else()
+    list(APPEND configure -A x64)
+  endif()
+  list(APPEND configure -DOPUS_STATIC_RUNTIME=ON)
+  set(name opus-interop.dll)
+elseif(RUNTIME MATCHES "^osx-")
+  if(architecture STREQUAL "arm64")
+    list(APPEND configure -DCMAKE_OSX_ARCHITECTURES=arm64)
+  else()
+    list(APPEND configure -DCMAKE_OSX_ARCHITECTURES=x86_64)
+  endif()
+  list(APPEND configure -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0)
+  set(name libopus-interop.dylib)
+else()
+  set(name libopus-interop.so)
+endif()
+
+execute_process(COMMAND "${CMAKE_COMMAND}" ${configure} RESULT_VARIABLE result)
+if(NOT result EQUAL 0)
+  message(FATAL_ERROR "CMake could not configure the native build.")
+endif()
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" --build "${build}" --config ${CONFIGURATION} --parallel
+  RESULT_VARIABLE result)
+if(NOT result EQUAL 0)
+  message(FATAL_ERROR "The native build failed.")
+endif()
+
+file(GLOB_RECURSE built "${build}/${name}" "${build}/*/${name}")
+list(FILTER built EXCLUDE REGEX "CMakeFiles")
+list(LENGTH built count)
+if(count EQUAL 0)
+  message(FATAL_ERROR "The build produced no ${name}.")
+endif()
+list(GET built 0 library)
+set(output "${root}/artifacts/native/${RUNTIME}/native")
+file(MAKE_DIRECTORY "${output}")
+file(COPY_FILE "${library}" "${output}/${name}")
+file(COPY_FILE "${source}/COPYING" "${root}/artifacts/native/LICENSE.opus.txt")
+message(STATUS "${RUNTIME} -> ${output}/${name}")

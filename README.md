@@ -53,7 +53,7 @@ through `LibOpus.opus_interop_*_ctl*`, which are fixed-signature forms of libopu
 
 ## Building
 
-See [CONTRIBUTING.md](CONTRIBUTING.md): `./eng/build-native.ps1` builds libopus from the pinned source,
+See [CONTRIBUTING.md](CONTRIBUTING.md): `cmake -P eng/build-native.cmake` builds libopus from the pinned source,
 then `dotnet build` and `dotnet test`.
 
 ## License

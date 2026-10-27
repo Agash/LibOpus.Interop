@@ -29,7 +29,7 @@
     <None Include="..\..\README.md" Pack="true" PackagePath="" />
     <InternalsVisibleTo Include="Opus.Interop.Tests" />
   </ItemGroup>
-  <!-- The native library from eng/build-native.ps1: every runtime CI built goes into the package, and
+  <!-- The native library from eng/build-native.cmake: every runtime CI built goes into the package, and
        this machine's is copied beside the output of whatever references the project. -->
   <ItemGroup>
     <!-- A directory PackagePath gets the item's RecursiveDir (<rid>/native/) appended by NuGet. -->

@@ -1,5 +1,5 @@
 # Builds libopus as one shared library with the non-variadic control entry points (src/opus_interop.c)
-# compiled in. eng/build-native.ps1 runs it against the pinned source in generate/inputs.json.
+# compiled in. eng/build-native.cmake runs it against the pinned source in generate/inputs.json.
 cmake_minimum_required(VERSION 3.21)
 project(opus_interop C)
 

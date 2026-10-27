@@ -5,17 +5,17 @@ starting anything large, so we can agree on the shape before you spend time on i
 
 ## Getting set up
 
-You need the .NET SDK pinned in [`global.json`](global.json), PowerShell 7, CMake 3.21 or later, and a
-C compiler (Visual Studio's C toolset on Windows).
+You need the .NET SDK pinned in [`global.json`](global.json), CMake 3.22 or later, and a C compiler
+(Visual Studio's C toolset on Windows).
 
 ```bash
 dotnet tool restore --disable-parallel
-./eng/build-native.ps1
+cmake -P eng/build-native.cmake
 dotnet build Opus.Interop.slnx
 dotnet test --solution Opus.Interop.slnx
 ```
 
-`build-native.ps1` builds libopus from the source pinned in [`generate/inputs.json`](generate/inputs.json)
+`build-native.cmake` builds libopus from the source pinned in [`generate/inputs.json`](generate/inputs.json)
 (verified by SHA-256), with the interop entry points in `native/src` compiled in, into
 `artifacts/native/<rid>/native`. The project packs every runtime found there under
 `runtimes/<rid>/native` and copies this machine's beside the output of anything referencing it.

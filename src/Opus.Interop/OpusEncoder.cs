@@ -116,7 +116,10 @@ public sealed unsafe class OpusEncoder : IDisposable
         set => Set(OPUS_SET_MAX_BANDWIDTH_REQUEST, (int)value);
     }
 
-    /// <summary>The bandpass, or <see cref="OpusBandwidth.Auto"/> to let the encoder choose it.</summary>
+    /// <summary>
+    /// The bandpass coming frames are coded at, or <see cref="OpusBandwidth.Auto"/> to let the encoder
+    /// choose it. Read back, it is the bandpass of the last frame coded (<c>OPUS_GET_BANDWIDTH</c>).
+    /// </summary>
     public OpusBandwidth Bandwidth
     {
         get => (OpusBandwidth)Get(OPUS_GET_BANDWIDTH_REQUEST);

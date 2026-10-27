@@ -107,6 +107,21 @@ public sealed class CodecTests
 
         encoder.ForceChannels = null;
         Assert.IsNull(encoder.ForceChannels);
+
+        // The switches go back the other way as well.
+        encoder.VariableBitrate = true;
+        encoder.ConstrainedVariableBitrate = true;
+        encoder.DiscontinuousTransmission = false;
+        encoder.PredictionDisabled = false;
+        encoder.PhaseInversionDisabled = false;
+        Assert.IsTrue(encoder.VariableBitrate);
+        Assert.IsTrue(encoder.ConstrainedVariableBitrate);
+        Assert.IsFalse(encoder.DiscontinuousTransmission);
+        Assert.IsFalse(encoder.PredictionDisabled);
+        Assert.IsFalse(encoder.PhaseInversionDisabled);
+        using OpusDecoder decoder = new(Rate, 2) { PhaseInversionDisabled = true };
+        decoder.PhaseInversionDisabled = false;
+        Assert.IsFalse(decoder.PhaseInversionDisabled);
         encoder.Reset();
         Assert.AreEqual(32_000, encoder.Bitrate, "a reset keeps the settings");
     }
@@ -236,6 +251,125 @@ public sealed class CodecTests
         }
 
         Assert.AreEqual(0, GC.GetAllocatedBytesForCurrentThread() - before);
+    }
+
+    [TestMethod]
+    public void DecoderControls_ReadBackAndReportTheLastPacket()
+    {
+        using OpusEncoder encoder = new(Rate, 1, OpusApplication.Voip)
+        {
+            ConstrainedVariableBitrate = false,
+            DiscontinuousTransmission = true,
+        };
+        using OpusDecoder decoder = new(Rate, 1) { Gain = 256, PhaseInversionDisabled = true };
+        Assert.AreEqual(256, decoder.Gain);
+        Assert.IsTrue(decoder.PhaseInversionDisabled);
+        Assert.IsFalse(encoder.ConstrainedVariableBitrate);
+
+        byte[] packet = new byte[OpusPacket.MaxFrameBytes];
+        float[] pcm = new float[Frame];
+        float[] voice = Tone(1, frames: 10, frequency: 220);
+        for (int f = 0; f < 10; f++)
+        {
+            int length = encoder.Encode(voice.AsSpan(f * Frame, Frame), packet);
+            _ = decoder.Decode(packet.AsSpan(0, length), pcm);
+        }
+
+        Assert.AreEqual(Frame, decoder.LastPacketDuration);
+        Assert.AreNotEqual(OpusBandwidth.Auto, decoder.Bandwidth);
+        Assert.IsGreaterThanOrEqualTo(0, decoder.Pitch);
+        encoder.Bandwidth = OpusBandwidth.Wideband;
+        _ = encoder.Encode(voice.AsSpan(0, Frame), packet);
+        Assert.AreEqual(
+            OpusBandwidth.Wideband,
+            encoder.Bandwidth,
+            "the last frame was coded at it"
+        );
+        Assert.IsFalse(encoder.InDiscontinuousTransmission, "a tone is not silence");
+
+        // Silence under DTX is coded as such once the encoder has seen enough of it.
+        for (int f = 0; f < 30; f++)
+        {
+            _ = encoder.Encode(new float[Frame], packet);
+        }
+
+        Assert.IsTrue(encoder.InDiscontinuousTransmission);
+        decoder.Reset();
+        Assert.AreEqual(256, decoder.Gain, "a reset keeps the settings");
+    }
+
+    [TestMethod]
+    public void ForwardErrorCorrection_Int16And24_RecoverALostPacket()
+    {
+        using OpusEncoder encoder = new(Rate, 1, OpusApplication.Voip)
+        {
+            Bitrate = 24_000,
+            InbandFec = OpusInbandFec.On,
+            PacketLossPercentage = 20,
+        };
+        using OpusDecoder decoder = new(Rate, 1);
+        float[] voice = Tone(1, frames: 12, frequency: 220);
+        byte[][] packets = new byte[12][];
+        byte[] packet = new byte[OpusPacket.MaxFrameBytes];
+        for (int f = 0; f < 12; f++)
+        {
+            packets[f] = packet[..encoder.Encode(voice.AsSpan(f * Frame, Frame), packet)];
+        }
+
+        short[] pcm16 = new short[Frame];
+        int[] pcm24 = new int[Frame];
+        for (int f = 0; f < 8; f++)
+        {
+            _ = decoder.Decode(packets[f], pcm16);
+        }
+
+        Assert.AreEqual(Frame, decoder.DecodeForwardErrorCorrection(packets[9], pcm16));
+        Assert.AreEqual(Frame, decoder.Decode(packets[9], pcm16));
+        Assert.AreEqual(Frame, decoder.DecodeForwardErrorCorrection24(packets[11], pcm24));
+        Assert.AreEqual(Frame, decoder.Decode24(packets[11], pcm24));
+    }
+
+    [TestMethod]
+    public void Packet_EmptyOrCorrupt_IsRefused()
+    {
+        Assert.AreEqual(
+            OpusError.InvalidPacket,
+            Assert.ThrowsExactly<OpusException>(() => OpusPacket.GetBandwidth([])).Error
+        );
+        Assert.AreEqual(
+            OpusError.InvalidPacket,
+            Assert.ThrowsExactly<OpusException>(() => OpusPacket.GetChannelCount([])).Error
+        );
+        Assert.AreEqual(
+            OpusError.InvalidPacket,
+            Assert.ThrowsExactly<OpusException>(() => OpusPacket.GetSamplesPerFrame([], Rate)).Error
+        );
+        _ = Assert.ThrowsExactly<OpusException>(() => OpusPacket.GetFrameCount([]));
+        _ = Assert.ThrowsExactly<OpusException>(() => OpusPacket.GetSampleCount([], Rate));
+        Assert.IsFalse(OpusPacket.HasForwardErrorCorrection([0x80]), "a CELT packet carries none");
+    }
+
+    [TestMethod]
+    public void Decoder_SamplesNotWholeFrames_AreRefused()
+    {
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new OpusDecoder(Rate, 0));
+        using OpusDecoder decoder = new(Rate, 2);
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+            decoder.Decode([0x80], new float[(Frame * 2) + 1])
+        );
+        _ = Assert.ThrowsExactly<ArgumentException>(() => decoder.Decode([0x80], new short[3]));
+    }
+
+    [TestMethod]
+    public void Exception_CarriesTheErrorAndMessage()
+    {
+        OpusException error = new(OpusError.InvalidPacket);
+        Assert.AreEqual(OpusError.InvalidPacket, error.Error);
+        StringAssert.Contains(error.Message, "corrupted");
+        Assert.AreEqual(OpusError.InternalError, new OpusException().Error);
+        Assert.AreEqual("why", new OpusException("why").Message);
+        InvalidOperationException cause = new();
+        Assert.AreSame(cause, new OpusException("why", cause).InnerException);
     }
 
     [TestMethod]

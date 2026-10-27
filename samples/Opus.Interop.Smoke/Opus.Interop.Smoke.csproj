@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Needed for IDE0005 (unused usings) to run in the build. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- A native executable ships no XML docs; this project's only feed IDE0005. The Compile-only AOT
+         publish (dotnet/sdk#54515) also never copies them into OutDir, where publish looks (MSB3030). -->
+    <PublishDocumentationFiles>false</PublishDocumentationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Opus.Interop\Opus.Interop.csproj" />
+  </ItemGroup>
+</Project>

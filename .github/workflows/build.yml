@@ -1,0 +1,285 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NuGetDirectory: ${{ github.workspace }}/nuget
+  DOTNET_NOLOGO: true
+
+jobs:
+  native:
+    name: Native (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    # Linux builds in Debian 11 (glibc 2.31), so the library loads on distributions and SBC images older
+    # than the runner's own.
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, rid: win-x64 }
+          - { os: windows-11-arm, rid: win-arm64 }
+          - { os: ubuntu-26.04, rid: linux-x64, container: "debian:bullseye" }
+          - { os: ubuntu-26.04-arm, rid: linux-arm64, container: "debian:bullseye" }
+          - { os: xcode-27, rid: osx-arm64 }
+          - { os: xcode-27, rid: osx-x64 }
+    steps:
+      - name: Install the C toolchain (Linux)
+        if: matrix.container
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends ca-certificates curl git gcc make cmake libicu67
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 11.0.x
+
+      - name: Install PowerShell (Linux)
+        if: matrix.container
+        run: |
+          dotnet tool install --global PowerShell
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      - name: Build libopus
+        shell: pwsh
+        run: ./eng/build-native.ps1 -Runtime ${{ matrix.rid }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-${{ matrix.rid }}
+          if-no-files-found: error
+          path: |
+            artifacts/native/${{ matrix.rid }}
+            artifacts/native/LICENSE.opus.txt
+
+  test:
+    name: Test (${{ matrix.rid }})
+    needs: [native]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-26.04, rid: linux-x64, format: true }
+          - { os: ubuntu-26.04-arm, rid: linux-arm64, format: false }
+          - { os: windows-latest, rid: win-x64, format: false }
+          - { os: windows-11-arm, rid: win-arm64, format: false }
+          - { os: xcode-27, rid: osx-arm64, format: false }
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # MinVer needs the tags
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.0.x
+            11.0.x
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: native-${{ matrix.rid }}
+          path: artifacts/native
+
+      - name: Restore
+        run: dotnet restore Opus.Interop.slnx
+
+      - name: Check formatting
+        if: matrix.format
+        run: |
+          dotnet tool restore --disable-parallel
+          dotnet csharpier check .
+
+      - name: Build
+        run: dotnet build Opus.Interop.slnx --no-restore -c Release
+
+      - name: Test
+        run: >-
+          dotnet test --solution Opus.Interop.slnx --no-build -c Release --settings tests.runsettings
+          --coverage --coverage-settings coverage.settings.xml --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.rid }}
+          if-no-files-found: warn
+          path: "**/coverage.cobertura.xml"
+
+      # IsAotCompatible only runs the analyzers. Publishing and running a real program is what proves
+      # the bindings and the managed layer compile and work as Native AOT.
+      - name: Native AOT publish and run
+        shell: pwsh
+        run: |
+          dotnet publish samples/Opus.Interop.Smoke/Opus.Interop.Smoke.csproj -r ${{ matrix.rid }} -c Release -o artifacts/smoke
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $binary = if ($IsWindows) { 'artifacts/smoke/Opus.Interop.Smoke.exe' } else { 'artifacts/smoke/Opus.Interop.Smoke' }
+          & $binary
+          exit $LASTEXITCODE
+
+  coverage:
+    name: Coverage (all legs merged)
+    needs: [test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 11.0.x
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: coverage-*
+          path: coverage
+
+      - name: Merge and gate
+        shell: pwsh
+        run: |
+          $reports = @(Get-ChildItem coverage -Recurse -Filter '*.cobertura.xml' | ForEach-Object FullName)
+          $totals = ./eng/merge-coverage.ps1 -Reports $reports -Output merged.cobertura.xml
+          @(
+            '### Coverage, all CI legs merged'
+            ''
+            'Hand-written code only; the generated bindings are excluded.'
+            ''
+            '| Metric | Covered | Total | Rate |'
+            '| --- | ---: | ---: | ---: |'
+            "| Lines | $($totals.LinesCovered) | $($totals.LinesValid) | $($totals.Lines.ToString('P1')) |"
+            "| Branches | $($totals.BranchesCovered) | $($totals.BranchesValid) | $($totals.Branches.ToString('P1')) |"
+          ) | Add-Content $env:GITHUB_STEP_SUMMARY
+          if ($totals.Lines -lt 0.90 -or $totals.Branches -lt 0.80) {
+            Write-Output "::error::Merged coverage $($totals.Lines.ToString('P1')) lines / $($totals.Branches.ToString('P1')) branches is below the 90% / 80% target."
+            exit 1
+          }
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-merged
+          path: merged.cobertura.xml
+
+  generated:
+    name: Generated bindings are current
+    # The bindings are generated from the pinned libopus archive and the interop header, so regenerating
+    # here must reproduce the committed files exactly.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.0.x
+            11.0.x
+
+      - name: Install LLVM 22 (clang builtin headers matching libclang)
+        run: choco install llvm --version 22.1.8 -y --no-progress
+
+      - name: Regenerate
+        run: |
+          dotnet tool restore --disable-parallel
+          dotnet run generate/Generate.cs
+
+      - name: Compare with the committed bindings
+        shell: bash
+        run: |
+          if ! git diff --quiet -- src/Opus.Interop/Generated \
+            || [ -n "$(git status --porcelain -- src/Opus.Interop/Generated)" ]; then
+            echo "::error::The committed bindings differ from what generate/Generate.cs produces. Regenerate and commit."
+            git status --short -- src/Opus.Interop/Generated | head -50
+            exit 1
+          fi
+
+  pack:
+    name: Pack
+    needs: [test, generated]
+    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.0.x
+            11.0.x
+
+      # Every runtime's library goes into the one package, under runtimes/<rid>/native.
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: native-*
+          path: artifacts/native
+          merge-multiple: true
+
+      - name: Pack
+        run: dotnet pack src/Opus.Interop/Opus.Interop.csproj -c Release -o ${{ env.NuGetDirectory }}
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: ${{ env.NuGetDirectory }}/*.nupkg
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nuget-package
+          if-no-files-found: error
+          retention-days: 1
+          path: ${{ env.NuGetDirectory }}/*.nupkg
+
+  publish:
+    name: Publish to NuGet
+    needs: [pack]
+    # Only a published GitHub release publishes; a tag push alone builds and packs.
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    environment:
+      name: nuget.org
+      url: https://www.nuget.org/packages/Opus.Interop
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: nuget-package
+          path: ${{ env.NuGetDirectory }}
+
+      - uses: actions/setup-dotnet@v6
+
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: Agash
+
+      - name: Push
+        run: >-
+          dotnet nuget push "${{ env.NuGetDirectory }}/*.nupkg"
+          --api-key "${{ steps.login.outputs.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate

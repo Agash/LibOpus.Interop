@@ -16,6 +16,16 @@ add_subdirectory(${OPUS_SOURCE_DIR} opus)
 
 target_sources(opus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/opus_interop.c)
 
+# libopus 1.6.1's CMake build adds the ARM run-time dispatch table for its neural-network code
+# (dnn/arm/arm_dnn_map.c) wherever it detects NEON at run time (Windows and Linux on arm), but the
+# network code itself only with DRED or OSCE. Without them nothing refers to the table, and its
+# references to the network functions are left unresolved, which fails the Windows link.
+if(NOT OPUS_DRED AND NOT OPUS_OSCE)
+  get_target_property(opus_sources opus SOURCES)
+  list(FILTER opus_sources EXCLUDE REGEX "arm_dnn_map\.c$")
+  set_property(TARGET opus PROPERTY SOURCES ${opus_sources})
+endif()
+
 # A name of its own, without a version in the file name or the SONAME: a process that has loaded the
 # system's libopus.so.0 (through a distribution's FFmpeg or GStreamer) would otherwise be handed that
 # copy by the dynamic loader, which matches libraries by SONAME, in place of this one.

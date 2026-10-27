@@ -41,12 +41,6 @@ $build = Join-Path $root "artifacts/obj/native/$Runtime"
 $configure = @('-S', (Join-Path $root 'native'), '-B', $build, "-DOPUS_SOURCE_DIR=$source",
     "-DCMAKE_BUILD_TYPE=$Configuration")
 $architecture = $Runtime.Split('-')[-1]
-if ($architecture -eq 'arm64') {
-    # NEON is part of AArch64, so it is presumed rather than detected at run time. libopus's CMake build
-    # also adds the DNN run-time dispatch (dnn/arm/arm_dnn_map.c) under detection without the DNN code
-    # it dispatches to, which leaves its symbols unresolved.
-    $configure += @('-DOPUS_PRESUME_NEON=ON', '-DOPUS_MAY_HAVE_NEON=OFF')
-}
 if ($Runtime.StartsWith('win-')) {
     # The C runtime linked in, so the library needs no Visual C++ redistributable.
     $configure += @('-A', @{ x64 = 'x64'; arm64 = 'ARM64'; x86 = 'Win32' }[$architecture],

@@ -42,7 +42,10 @@ jobs:
       - name: Install the C toolchain (Linux)
         if: matrix.container
         run: |
-          dnf install -y -q gcc make cmake git tar gzip libicu
+          # GCC 8, AlmaLinux 8's own, mistypes an AVX2 intrinsic libopus uses; the toolset's GCC 13 still
+          # links against the system's glibc 2.28.
+          dnf install -y -q gcc-toolset-13-gcc make cmake git tar gzip libicu
+          echo "CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc" >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v7
 

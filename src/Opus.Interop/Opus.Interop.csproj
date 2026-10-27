@@ -30,11 +30,14 @@
     <InternalsVisibleTo Include="Opus.Interop.Tests" />
   </ItemGroup>
   <!-- The native library from eng/build-native.cmake: every runtime CI built goes into the package, and
-       this machine's is copied beside the output of whatever references the project. -->
+       this machine's is copied beside the output of whatever references the project. Each file is one
+       item: an app bundle (macOS) takes every native library a reference lists, and two items for one
+       file have it processed twice at once. -->
   <ItemGroup>
     <!-- A directory PackagePath gets the item's RecursiveDir (<rid>/native/) appended by NuGet. -->
     <None
       Include="..\..\artifacts\native\**\*opus-interop.*"
+      Exclude="..\..\artifacts\native\$(NETCoreSdkRuntimeIdentifier)\native\*"
       Pack="true"
       PackagePath="runtimes"
       Visible="false"
@@ -50,7 +53,8 @@
       Include="..\..\artifacts\native\$(NETCoreSdkRuntimeIdentifier)\native\*"
       CopyToOutputDirectory="PreserveNewest"
       Link="%(Filename)%(Extension)"
-      Pack="false"
+      Pack="true"
+      PackagePath="runtimes\$(NETCoreSdkRuntimeIdentifier)\native\"
       Visible="false"
     />
   </ItemGroup>

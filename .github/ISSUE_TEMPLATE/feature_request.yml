@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest a capability for Opus.Interop.
+description: Suggest a capability for LibOpus.Interop.
 labels: ["enhancement"]
 body:
   - type: textarea

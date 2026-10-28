@@ -5,9 +5,9 @@
 
 using System.Runtime.InteropServices;
 
-namespace Opus.Interop.Native;
+namespace LibOpus.Interop.Native;
 
-public static unsafe partial class LibOpus
+public static unsafe partial class Opus
 {
     [DllImport("opus-interop", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]

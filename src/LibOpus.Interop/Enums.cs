@@ -1,6 +1,6 @@
-using static Opus.Interop.Native.LibOpus;
+using static LibOpus.Interop.Native.Opus;
 
-namespace Opus.Interop;
+namespace LibOpus.Interop;
 
 /// <summary>What an encoder is tuned for, chosen when it is created (<c>OPUS_APPLICATION_*</c>).</summary>
 public enum OpusApplication

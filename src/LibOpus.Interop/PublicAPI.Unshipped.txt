@@ -1,0 +1,332 @@
+#nullable enable
+LibOpus.Interop.Native.Opus
+LibOpus.Interop.Native.OpusDRED
+LibOpus.Interop.Native.OpusDRED.OpusDRED() -> void
+LibOpus.Interop.Native.OpusDREDDecoder
+LibOpus.Interop.Native.OpusDREDDecoder.OpusDREDDecoder() -> void
+LibOpus.Interop.Native.OpusDecoder
+LibOpus.Interop.Native.OpusDecoder.OpusDecoder() -> void
+LibOpus.Interop.Native.OpusEncoder
+LibOpus.Interop.Native.OpusEncoder.OpusEncoder() -> void
+LibOpus.Interop.Native.OpusMSDecoder
+LibOpus.Interop.Native.OpusMSDecoder.OpusMSDecoder() -> void
+LibOpus.Interop.Native.OpusMSEncoder
+LibOpus.Interop.Native.OpusMSEncoder.OpusMSEncoder() -> void
+LibOpus.Interop.Native.OpusProjectionDecoder
+LibOpus.Interop.Native.OpusProjectionDecoder.OpusProjectionDecoder() -> void
+LibOpus.Interop.Native.OpusProjectionEncoder
+LibOpus.Interop.Native.OpusProjectionEncoder.OpusProjectionEncoder() -> void
+LibOpus.Interop.Native.OpusRepacketizer
+LibOpus.Interop.Native.OpusRepacketizer.OpusRepacketizer() -> void
+LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusApplication.Audio = 2049 -> LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusApplication.RestrictedCelt = 2053 -> LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusApplication.RestrictedLowDelay = 2051 -> LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusApplication.RestrictedSilk = 2052 -> LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusApplication.Voip = 2048 -> LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusBandwidth.Auto = -1000 -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusBandwidth.Fullband = 1105 -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusBandwidth.Mediumband = 1102 -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusBandwidth.Narrowband = 1101 -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusBandwidth.SuperWideband = 1104 -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusBandwidth.Wideband = 1103 -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusDecoder
+LibOpus.Interop.OpusDecoder.Bandwidth.get -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusDecoder.Channels.get -> int
+LibOpus.Interop.OpusDecoder.Decode(System.ReadOnlySpan<byte> packet, System.Span<float> pcm) -> int
+LibOpus.Interop.OpusDecoder.Decode(System.ReadOnlySpan<byte> packet, System.Span<short> pcm) -> int
+LibOpus.Interop.OpusDecoder.Decode24(System.ReadOnlySpan<byte> packet, System.Span<int> pcm) -> int
+LibOpus.Interop.OpusDecoder.DecodeForwardErrorCorrection(System.ReadOnlySpan<byte> packet, System.Span<float> pcm) -> int
+LibOpus.Interop.OpusDecoder.DecodeForwardErrorCorrection(System.ReadOnlySpan<byte> packet, System.Span<short> pcm) -> int
+LibOpus.Interop.OpusDecoder.DecodeForwardErrorCorrection24(System.ReadOnlySpan<byte> packet, System.Span<int> pcm) -> int
+LibOpus.Interop.OpusDecoder.Dispose() -> void
+LibOpus.Interop.OpusDecoder.FinalRange.get -> uint
+LibOpus.Interop.OpusDecoder.Gain.get -> int
+LibOpus.Interop.OpusDecoder.Gain.set -> void
+LibOpus.Interop.OpusDecoder.GetSampleCount(System.ReadOnlySpan<byte> packet) -> int
+LibOpus.Interop.OpusDecoder.LastPacketDuration.get -> int
+LibOpus.Interop.OpusDecoder.OpusDecoder(int sampleRate, int channels) -> void
+LibOpus.Interop.OpusDecoder.PhaseInversionDisabled.get -> bool
+LibOpus.Interop.OpusDecoder.PhaseInversionDisabled.set -> void
+LibOpus.Interop.OpusDecoder.Pitch.get -> int
+LibOpus.Interop.OpusDecoder.Reset() -> void
+LibOpus.Interop.OpusDecoder.SampleRate.get -> int
+LibOpus.Interop.OpusEncoder
+LibOpus.Interop.OpusEncoder.Application.get -> LibOpus.Interop.OpusApplication
+LibOpus.Interop.OpusEncoder.Application.set -> void
+LibOpus.Interop.OpusEncoder.Bandwidth.get -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusEncoder.Bandwidth.set -> void
+LibOpus.Interop.OpusEncoder.Bitrate.get -> int
+LibOpus.Interop.OpusEncoder.Bitrate.set -> void
+LibOpus.Interop.OpusEncoder.Channels.get -> int
+LibOpus.Interop.OpusEncoder.Complexity.get -> int
+LibOpus.Interop.OpusEncoder.Complexity.set -> void
+LibOpus.Interop.OpusEncoder.ConstrainedVariableBitrate.get -> bool
+LibOpus.Interop.OpusEncoder.ConstrainedVariableBitrate.set -> void
+LibOpus.Interop.OpusEncoder.DiscontinuousTransmission.get -> bool
+LibOpus.Interop.OpusEncoder.DiscontinuousTransmission.set -> void
+LibOpus.Interop.OpusEncoder.Dispose() -> void
+LibOpus.Interop.OpusEncoder.Encode(System.ReadOnlySpan<float> pcm, System.Span<byte> packet) -> int
+LibOpus.Interop.OpusEncoder.Encode(System.ReadOnlySpan<short> pcm, System.Span<byte> packet) -> int
+LibOpus.Interop.OpusEncoder.Encode24(System.ReadOnlySpan<int> pcm, System.Span<byte> packet) -> int
+LibOpus.Interop.OpusEncoder.FinalRange.get -> uint
+LibOpus.Interop.OpusEncoder.ForceChannels.get -> int?
+LibOpus.Interop.OpusEncoder.ForceChannels.set -> void
+LibOpus.Interop.OpusEncoder.FrameDuration.get -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusEncoder.FrameDuration.set -> void
+LibOpus.Interop.OpusEncoder.InDiscontinuousTransmission.get -> bool
+LibOpus.Interop.OpusEncoder.InbandFec.get -> LibOpus.Interop.OpusInbandFec
+LibOpus.Interop.OpusEncoder.InbandFec.set -> void
+LibOpus.Interop.OpusEncoder.Lookahead.get -> int
+LibOpus.Interop.OpusEncoder.LsbDepth.get -> int
+LibOpus.Interop.OpusEncoder.LsbDepth.set -> void
+LibOpus.Interop.OpusEncoder.MaxBandwidth.get -> LibOpus.Interop.OpusBandwidth
+LibOpus.Interop.OpusEncoder.MaxBandwidth.set -> void
+LibOpus.Interop.OpusEncoder.OpusEncoder(int sampleRate, int channels, LibOpus.Interop.OpusApplication application) -> void
+LibOpus.Interop.OpusEncoder.PacketLossPercentage.get -> int
+LibOpus.Interop.OpusEncoder.PacketLossPercentage.set -> void
+LibOpus.Interop.OpusEncoder.PhaseInversionDisabled.get -> bool
+LibOpus.Interop.OpusEncoder.PhaseInversionDisabled.set -> void
+LibOpus.Interop.OpusEncoder.PredictionDisabled.get -> bool
+LibOpus.Interop.OpusEncoder.PredictionDisabled.set -> void
+LibOpus.Interop.OpusEncoder.Reset() -> void
+LibOpus.Interop.OpusEncoder.SampleRate.get -> int
+LibOpus.Interop.OpusEncoder.Signal.get -> LibOpus.Interop.OpusSignal
+LibOpus.Interop.OpusEncoder.Signal.set -> void
+LibOpus.Interop.OpusEncoder.VariableBitrate.get -> bool
+LibOpus.Interop.OpusEncoder.VariableBitrate.set -> void
+LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.AllocationFailed = -7 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.BadArgument = -1 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.BufferTooSmall = -2 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.InternalError = -3 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.InvalidPacket = -4 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.InvalidState = -6 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusError.Unimplemented = -5 -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusException
+LibOpus.Interop.OpusException.Error.get -> LibOpus.Interop.OpusError
+LibOpus.Interop.OpusException.OpusException() -> void
+LibOpus.Interop.OpusException.OpusException(LibOpus.Interop.OpusError error) -> void
+LibOpus.Interop.OpusException.OpusException(string! message) -> void
+LibOpus.Interop.OpusException.OpusException(string! message, System.Exception! innerException) -> void
+LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.FromInput = 5000 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms10 = 5003 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms100 = 5008 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms120 = 5009 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms20 = 5004 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms2_5 = 5001 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms40 = 5005 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms5 = 5002 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms60 = 5006 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusFrameDuration.Ms80 = 5007 -> LibOpus.Interop.OpusFrameDuration
+LibOpus.Interop.OpusInbandFec
+LibOpus.Interop.OpusInbandFec.Off = 0 -> LibOpus.Interop.OpusInbandFec
+LibOpus.Interop.OpusInbandFec.On = 1 -> LibOpus.Interop.OpusInbandFec
+LibOpus.Interop.OpusInbandFec.OnWithoutSilkSwitch = 2 -> LibOpus.Interop.OpusInbandFec
+LibOpus.Interop.OpusLibrary
+LibOpus.Interop.OpusPacket
+LibOpus.Interop.OpusSignal
+LibOpus.Interop.OpusSignal.Auto = -1000 -> LibOpus.Interop.OpusSignal
+LibOpus.Interop.OpusSignal.Music = 3002 -> LibOpus.Interop.OpusSignal
+LibOpus.Interop.OpusSignal.Voice = 3001 -> LibOpus.Interop.OpusSignal
+const LibOpus.Interop.Native.Opus.OPUS_ALLOC_FAIL = -7 -> int
+const LibOpus.Interop.Native.Opus.OPUS_APPLICATION_AUDIO = 2049 -> int
+const LibOpus.Interop.Native.Opus.OPUS_APPLICATION_RESTRICTED_CELT = 2053 -> int
+const LibOpus.Interop.Native.Opus.OPUS_APPLICATION_RESTRICTED_LOWDELAY = 2051 -> int
+const LibOpus.Interop.Native.Opus.OPUS_APPLICATION_RESTRICTED_SILK = 2052 -> int
+const LibOpus.Interop.Native.Opus.OPUS_APPLICATION_VOIP = 2048 -> int
+const LibOpus.Interop.Native.Opus.OPUS_AUTO = -1000 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BAD_ARG = -1 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BANDWIDTH_FULLBAND = 1105 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BANDWIDTH_MEDIUMBAND = 1102 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BANDWIDTH_NARROWBAND = 1101 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BANDWIDTH_SUPERWIDEBAND = 1104 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BANDWIDTH_WIDEBAND = 1103 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BITRATE_MAX = -1 -> int
+const LibOpus.Interop.Native.Opus.OPUS_BUFFER_TOO_SMALL = -2 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_100_MS = 5008 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_10_MS = 5003 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_120_MS = 5009 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_20_MS = 5004 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_2_5_MS = 5001 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_40_MS = 5005 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_5_MS = 5002 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_60_MS = 5006 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_80_MS = 5007 -> int
+const LibOpus.Interop.Native.Opus.OPUS_FRAMESIZE_ARG = 5000 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_APPLICATION_REQUEST = 4001 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_BANDWIDTH_REQUEST = 4009 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_BITRATE_REQUEST = 4003 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_COMPLEXITY_REQUEST = 4011 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_DRED_DURATION_REQUEST = 4051 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_DTX_REQUEST = 4017 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_EXPERT_FRAME_DURATION_REQUEST = 4041 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_FINAL_RANGE_REQUEST = 4031 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_FORCE_CHANNELS_REQUEST = 4023 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_GAIN_REQUEST = 4045 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_IGNORE_EXTENSIONS_REQUEST = 4059 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_INBAND_FEC_REQUEST = 4013 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_IN_DTX_REQUEST = 4049 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_LAST_PACKET_DURATION_REQUEST = 4039 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_LOOKAHEAD_REQUEST = 4027 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_LSB_DEPTH_REQUEST = 4037 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_MAX_BANDWIDTH_REQUEST = 4005 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_OSCE_BWE_REQUEST = 4055 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_PACKET_LOSS_PERC_REQUEST = 4015 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_PHASE_INVERSION_DISABLED_REQUEST = 4047 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_PITCH_REQUEST = 4033 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_PREDICTION_DISABLED_REQUEST = 4043 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_QEXT_REQUEST = 4057 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_SAMPLE_RATE_REQUEST = 4029 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_SIGNAL_REQUEST = 4025 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_VBR_CONSTRAINT_REQUEST = 4021 -> int
+const LibOpus.Interop.Native.Opus.OPUS_GET_VBR_REQUEST = 4007 -> int
+const LibOpus.Interop.Native.Opus.OPUS_INTERNAL_ERROR = -3 -> int
+const LibOpus.Interop.Native.Opus.OPUS_INVALID_PACKET = -4 -> int
+const LibOpus.Interop.Native.Opus.OPUS_INVALID_STATE = -6 -> int
+const LibOpus.Interop.Native.Opus.OPUS_MULTISTREAM_GET_DECODER_STATE_REQUEST = 5122 -> int
+const LibOpus.Interop.Native.Opus.OPUS_MULTISTREAM_GET_ENCODER_STATE_REQUEST = 5120 -> int
+const LibOpus.Interop.Native.Opus.OPUS_OK = 0 -> int
+const LibOpus.Interop.Native.Opus.OPUS_PROJECTION_GET_DEMIXING_MATRIX_GAIN_REQUEST = 6001 -> int
+const LibOpus.Interop.Native.Opus.OPUS_PROJECTION_GET_DEMIXING_MATRIX_REQUEST = 6005 -> int
+const LibOpus.Interop.Native.Opus.OPUS_PROJECTION_GET_DEMIXING_MATRIX_SIZE_REQUEST = 6003 -> int
+const LibOpus.Interop.Native.Opus.OPUS_RESET_STATE = 4028 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_APPLICATION_REQUEST = 4000 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_BANDWIDTH_REQUEST = 4008 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_BITRATE_REQUEST = 4002 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_COMPLEXITY_REQUEST = 4010 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_DNN_BLOB_REQUEST = 4052 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_DRED_DURATION_REQUEST = 4050 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_DTX_REQUEST = 4016 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_EXPERT_FRAME_DURATION_REQUEST = 4040 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_FORCE_CHANNELS_REQUEST = 4022 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_GAIN_REQUEST = 4034 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_IGNORE_EXTENSIONS_REQUEST = 4058 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_INBAND_FEC_REQUEST = 4012 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_LSB_DEPTH_REQUEST = 4036 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_MAX_BANDWIDTH_REQUEST = 4004 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_OSCE_BWE_REQUEST = 4054 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_PACKET_LOSS_PERC_REQUEST = 4014 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST = 4046 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_PREDICTION_DISABLED_REQUEST = 4042 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_QEXT_REQUEST = 4056 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_SIGNAL_REQUEST = 4024 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_VBR_CONSTRAINT_REQUEST = 4020 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SET_VBR_REQUEST = 4006 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SIGNAL_MUSIC = 3002 -> int
+const LibOpus.Interop.Native.Opus.OPUS_SIGNAL_VOICE = 3001 -> int
+const LibOpus.Interop.Native.Opus.OPUS_UNIMPLEMENTED = -5 -> int
+const LibOpus.Interop.OpusEncoder.AutoBitrate = -1000 -> int
+const LibOpus.Interop.OpusEncoder.MaxBitrate = -1 -> int
+const LibOpus.Interop.OpusPacket.MaxFrameBytes = 1275 -> int
+const LibOpus.Interop.OpusPacket.MaxSamplesPerChannel = 5760 -> int
+static LibOpus.Interop.OpusLibrary.Version.get -> string!
+static LibOpus.Interop.OpusPacket.GetBandwidth(System.ReadOnlySpan<byte> packet) -> LibOpus.Interop.OpusBandwidth
+static LibOpus.Interop.OpusPacket.GetChannelCount(System.ReadOnlySpan<byte> packet) -> int
+static LibOpus.Interop.OpusPacket.GetFrameCount(System.ReadOnlySpan<byte> packet) -> int
+static LibOpus.Interop.OpusPacket.GetSampleCount(System.ReadOnlySpan<byte> packet, int sampleRate) -> int
+static LibOpus.Interop.OpusPacket.GetSamplesPerFrame(System.ReadOnlySpan<byte> packet, int sampleRate) -> int
+static LibOpus.Interop.OpusPacket.HasForwardErrorCorrection(System.ReadOnlySpan<byte> packet) -> bool
+static extern LibOpus.Interop.Native.Opus.opus_decode(LibOpus.Interop.Native.OpusDecoder* st, byte* data, int len, short* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decode24(LibOpus.Interop.Native.OpusDecoder* st, byte* data, int len, int* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decode_float(LibOpus.Interop.Native.OpusDecoder* st, byte* data, int len, float* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decoder_create(int Fs, int channels, int* error) -> LibOpus.Interop.Native.OpusDecoder*
+static extern LibOpus.Interop.Native.Opus.opus_decoder_destroy(LibOpus.Interop.Native.OpusDecoder* st) -> void
+static extern LibOpus.Interop.Native.Opus.opus_decoder_dred_decode(LibOpus.Interop.Native.OpusDecoder* st, LibOpus.Interop.Native.OpusDRED* dred, int dred_offset, short* pcm, int frame_size) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decoder_dred_decode24(LibOpus.Interop.Native.OpusDecoder* st, LibOpus.Interop.Native.OpusDRED* dred, int dred_offset, int* pcm, int frame_size) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decoder_dred_decode_float(LibOpus.Interop.Native.OpusDecoder* st, LibOpus.Interop.Native.OpusDRED* dred, int dred_offset, float* pcm, int frame_size) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decoder_get_nb_samples(LibOpus.Interop.Native.OpusDecoder* dec, byte* packet, int len) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decoder_get_size(int channels) -> int
+static extern LibOpus.Interop.Native.Opus.opus_decoder_init(LibOpus.Interop.Native.OpusDecoder* st, int Fs, int channels) -> int
+static extern LibOpus.Interop.Native.Opus.opus_dred_alloc(int* error) -> LibOpus.Interop.Native.OpusDRED*
+static extern LibOpus.Interop.Native.Opus.opus_dred_decoder_create(int* error) -> LibOpus.Interop.Native.OpusDREDDecoder*
+static extern LibOpus.Interop.Native.Opus.opus_dred_decoder_destroy(LibOpus.Interop.Native.OpusDREDDecoder* dec) -> void
+static extern LibOpus.Interop.Native.Opus.opus_dred_decoder_get_size() -> int
+static extern LibOpus.Interop.Native.Opus.opus_dred_decoder_init(LibOpus.Interop.Native.OpusDREDDecoder* dec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_dred_free(LibOpus.Interop.Native.OpusDRED* dec) -> void
+static extern LibOpus.Interop.Native.Opus.opus_dred_get_size() -> int
+static extern LibOpus.Interop.Native.Opus.opus_dred_parse(LibOpus.Interop.Native.OpusDREDDecoder* dred_dec, LibOpus.Interop.Native.OpusDRED* dred, byte* data, int len, int max_dred_samples, int sampling_rate, int* dred_end, int defer_processing) -> int
+static extern LibOpus.Interop.Native.Opus.opus_dred_process(LibOpus.Interop.Native.OpusDREDDecoder* dred_dec, LibOpus.Interop.Native.OpusDRED* src, LibOpus.Interop.Native.OpusDRED* dst) -> int
+static extern LibOpus.Interop.Native.Opus.opus_encode(LibOpus.Interop.Native.OpusEncoder* st, short* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_encode24(LibOpus.Interop.Native.OpusEncoder* st, int* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_encode_float(LibOpus.Interop.Native.OpusEncoder* st, float* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_encoder_create(int Fs, int channels, int application, int* error) -> LibOpus.Interop.Native.OpusEncoder*
+static extern LibOpus.Interop.Native.Opus.opus_encoder_destroy(LibOpus.Interop.Native.OpusEncoder* st) -> void
+static extern LibOpus.Interop.Native.Opus.opus_encoder_get_size(int channels) -> int
+static extern LibOpus.Interop.Native.Opus.opus_encoder_init(LibOpus.Interop.Native.OpusEncoder* st, int Fs, int channels, int application) -> int
+static extern LibOpus.Interop.Native.Opus.opus_get_version_string() -> sbyte*
+static extern LibOpus.Interop.Native.Opus.opus_interop_decoder_ctl(LibOpus.Interop.Native.OpusDecoder* st, int request) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_decoder_ctl_get(LibOpus.Interop.Native.OpusDecoder* st, int request, int* value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_decoder_ctl_set(LibOpus.Interop.Native.OpusDecoder* st, int request, int value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_encoder_ctl(LibOpus.Interop.Native.OpusEncoder* st, int request) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_encoder_ctl_get(LibOpus.Interop.Native.OpusEncoder* st, int request, int* value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_encoder_ctl_set(LibOpus.Interop.Native.OpusEncoder* st, int request, int value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_decoder_ctl(LibOpus.Interop.Native.OpusMSDecoder* st, int request) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_decoder_ctl_get(LibOpus.Interop.Native.OpusMSDecoder* st, int request, int* value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_decoder_ctl_get_state(LibOpus.Interop.Native.OpusMSDecoder* st, int request, int stream, LibOpus.Interop.Native.OpusDecoder** state) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_decoder_ctl_set(LibOpus.Interop.Native.OpusMSDecoder* st, int request, int value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_encoder_ctl(LibOpus.Interop.Native.OpusMSEncoder* st, int request) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_encoder_ctl_get(LibOpus.Interop.Native.OpusMSEncoder* st, int request, int* value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_encoder_ctl_get_state(LibOpus.Interop.Native.OpusMSEncoder* st, int request, int stream, LibOpus.Interop.Native.OpusEncoder** state) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_multistream_encoder_ctl_set(LibOpus.Interop.Native.OpusMSEncoder* st, int request, int value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_decoder_ctl(LibOpus.Interop.Native.OpusProjectionDecoder* st, int request) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_decoder_ctl_get(LibOpus.Interop.Native.OpusProjectionDecoder* st, int request, int* value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_decoder_ctl_set(LibOpus.Interop.Native.OpusProjectionDecoder* st, int request, int value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_encoder_ctl(LibOpus.Interop.Native.OpusProjectionEncoder* st, int request) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_encoder_ctl_get(LibOpus.Interop.Native.OpusProjectionEncoder* st, int request, int* value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_encoder_ctl_get_matrix(LibOpus.Interop.Native.OpusProjectionEncoder* st, int request, byte* matrix, int size) -> int
+static extern LibOpus.Interop.Native.Opus.opus_interop_projection_encoder_ctl_set(LibOpus.Interop.Native.OpusProjectionEncoder* st, int request, int value) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decode(LibOpus.Interop.Native.OpusMSDecoder* st, byte* data, int len, short* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decode24(LibOpus.Interop.Native.OpusMSDecoder* st, byte* data, int len, int* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decode_float(LibOpus.Interop.Native.OpusMSDecoder* st, byte* data, int len, float* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decoder_create(int Fs, int channels, int streams, int coupled_streams, byte* mapping, int* error) -> LibOpus.Interop.Native.OpusMSDecoder*
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decoder_destroy(LibOpus.Interop.Native.OpusMSDecoder* st) -> void
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decoder_get_size(int streams, int coupled_streams) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_decoder_init(LibOpus.Interop.Native.OpusMSDecoder* st, int Fs, int channels, int streams, int coupled_streams, byte* mapping) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encode(LibOpus.Interop.Native.OpusMSEncoder* st, short* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encode24(LibOpus.Interop.Native.OpusMSEncoder* st, int* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encode_float(LibOpus.Interop.Native.OpusMSEncoder* st, float* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encoder_create(int Fs, int channels, int streams, int coupled_streams, byte* mapping, int application, int* error) -> LibOpus.Interop.Native.OpusMSEncoder*
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encoder_destroy(LibOpus.Interop.Native.OpusMSEncoder* st) -> void
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encoder_get_size(int streams, int coupled_streams) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_encoder_init(LibOpus.Interop.Native.OpusMSEncoder* st, int Fs, int channels, int streams, int coupled_streams, byte* mapping, int application) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_packet_pad(byte* data, int len, int new_len, int nb_streams) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_packet_unpad(byte* data, int len, int nb_streams) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_surround_encoder_create(int Fs, int channels, int mapping_family, int* streams, int* coupled_streams, byte* mapping, int application, int* error) -> LibOpus.Interop.Native.OpusMSEncoder*
+static extern LibOpus.Interop.Native.Opus.opus_multistream_surround_encoder_get_size(int channels, int mapping_family) -> int
+static extern LibOpus.Interop.Native.Opus.opus_multistream_surround_encoder_init(LibOpus.Interop.Native.OpusMSEncoder* st, int Fs, int channels, int mapping_family, int* streams, int* coupled_streams, byte* mapping, int application) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_get_bandwidth(byte* data) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_get_nb_channels(byte* data) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_get_nb_frames(byte* packet, int len) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_get_nb_samples(byte* packet, int len, int Fs) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_get_samples_per_frame(byte* data, int Fs) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_has_lbrr(byte* packet, int len) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_pad(byte* data, int len, int new_len) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_parse(byte* data, int len, byte* out_toc, byte** frames, short* size, int* payload_offset) -> int
+static extern LibOpus.Interop.Native.Opus.opus_packet_unpad(byte* data, int len) -> int
+static extern LibOpus.Interop.Native.Opus.opus_pcm_soft_clip(float* pcm, int frame_size, int channels, float* softclip_mem) -> void
+static extern LibOpus.Interop.Native.Opus.opus_projection_ambisonics_encoder_create(int Fs, int channels, int mapping_family, int* streams, int* coupled_streams, int application, int* error) -> LibOpus.Interop.Native.OpusProjectionEncoder*
+static extern LibOpus.Interop.Native.Opus.opus_projection_ambisonics_encoder_get_size(int channels, int mapping_family) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_ambisonics_encoder_init(LibOpus.Interop.Native.OpusProjectionEncoder* st, int Fs, int channels, int mapping_family, int* streams, int* coupled_streams, int application) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_decode(LibOpus.Interop.Native.OpusProjectionDecoder* st, byte* data, int len, short* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_decode24(LibOpus.Interop.Native.OpusProjectionDecoder* st, byte* data, int len, int* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_decode_float(LibOpus.Interop.Native.OpusProjectionDecoder* st, byte* data, int len, float* pcm, int frame_size, int decode_fec) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_decoder_create(int Fs, int channels, int streams, int coupled_streams, byte* demixing_matrix, int demixing_matrix_size, int* error) -> LibOpus.Interop.Native.OpusProjectionDecoder*
+static extern LibOpus.Interop.Native.Opus.opus_projection_decoder_destroy(LibOpus.Interop.Native.OpusProjectionDecoder* st) -> void
+static extern LibOpus.Interop.Native.Opus.opus_projection_decoder_get_size(int channels, int streams, int coupled_streams) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_decoder_init(LibOpus.Interop.Native.OpusProjectionDecoder* st, int Fs, int channels, int streams, int coupled_streams, byte* demixing_matrix, int demixing_matrix_size) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_encode(LibOpus.Interop.Native.OpusProjectionEncoder* st, short* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_encode24(LibOpus.Interop.Native.OpusProjectionEncoder* st, int* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_encode_float(LibOpus.Interop.Native.OpusProjectionEncoder* st, float* pcm, int frame_size, byte* data, int max_data_bytes) -> int
+static extern LibOpus.Interop.Native.Opus.opus_projection_encoder_destroy(LibOpus.Interop.Native.OpusProjectionEncoder* st) -> void
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_cat(LibOpus.Interop.Native.OpusRepacketizer* rp, byte* data, int len) -> int
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_create() -> LibOpus.Interop.Native.OpusRepacketizer*
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_destroy(LibOpus.Interop.Native.OpusRepacketizer* rp) -> void
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_get_nb_frames(LibOpus.Interop.Native.OpusRepacketizer* rp) -> int
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_get_size() -> int
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_init(LibOpus.Interop.Native.OpusRepacketizer* rp) -> LibOpus.Interop.Native.OpusRepacketizer*
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_out(LibOpus.Interop.Native.OpusRepacketizer* rp, byte* data, int maxlen) -> int
+static extern LibOpus.Interop.Native.Opus.opus_repacketizer_out_range(LibOpus.Interop.Native.OpusRepacketizer* rp, int begin, int end, byte* data, int maxlen) -> int
+static extern LibOpus.Interop.Native.Opus.opus_strerror(int error) -> sbyte*

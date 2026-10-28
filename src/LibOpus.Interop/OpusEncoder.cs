@@ -1,7 +1,7 @@
-using Opus.Interop.Interop;
-using static Opus.Interop.Native.LibOpus;
+using LibOpus.Interop.Interop;
+using static LibOpus.Interop.Native.Opus;
 
-namespace Opus.Interop;
+namespace LibOpus.Interop;
 
 /// <summary>
 /// An Opus encoder (libopus <c>OpusEncoder</c>): PCM frames in, Opus packets out. Each call encodes one

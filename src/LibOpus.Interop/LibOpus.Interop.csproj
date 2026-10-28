@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>Opus.Interop</RootNamespace>
+    <RootNamespace>LibOpus.Interop</RootNamespace>
     <!-- The shipped library runs the recommended rule set as errors; tests stay on the default set. -->
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -13,7 +13,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageId>Opus.Interop</PackageId>
+    <PackageId>LibOpus.Interop</PackageId>
     <Description>.NET bindings for libopus 1.6: an Opus encoder and decoder with every control typed (bitrate, complexity, in-band FEC, DTX, bandwidth, signal), packet inspection, and float, 16-bit and 24-bit PCM, over complete source-generated bindings to libopus. Ships libopus for Windows, Linux and macOS on x64 and arm64. Allocation-free on the encode and decode paths, Native AOT compatible.</Description>
     <PackageTags>opus;libopus;audio;codec;encoder;decoder;voip;webrtc;interop;bindings;aot</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -27,7 +27,7 @@
     <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
     <None Include="..\..\README.md" Pack="true" PackagePath="" />
-    <InternalsVisibleTo Include="Opus.Interop.Tests" />
+    <InternalsVisibleTo Include="LibOpus.Interop.Tests" />
   </ItemGroup>
   <!-- The native library from eng/build-native.cmake: every runtime CI built goes into the package, and
        this machine's is copied beside the output of whatever references the project. Each file is one

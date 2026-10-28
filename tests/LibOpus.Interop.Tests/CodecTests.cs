@@ -1,4 +1,4 @@
-namespace Opus.Interop.Tests;
+namespace LibOpus.Interop.Tests;
 
 [TestClass]
 public sealed class CodecTests

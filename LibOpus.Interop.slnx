@@ -1,0 +1,11 @@
+<Solution>
+    <Folder Name="/src/">
+        <Project Path="src/LibOpus.Interop/LibOpus.Interop.csproj" />
+    </Folder>
+    <Folder Name="/samples/">
+        <Project Path="samples/LibOpus.Interop.Smoke/LibOpus.Interop.Smoke.csproj" />
+    </Folder>
+    <Folder Name="/tests/">
+        <Project Path="tests/LibOpus.Interop.Tests/LibOpus.Interop.Tests.csproj" />
+    </Folder>
+</Solution>

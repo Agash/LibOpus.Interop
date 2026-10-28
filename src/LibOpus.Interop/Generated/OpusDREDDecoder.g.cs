@@ -3,8 +3,8 @@
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace Opus.Interop.Native;
+namespace LibOpus.Interop.Native;
 
-public partial struct OpusProjectionEncoder
+public partial struct OpusDREDDecoder
 {
 }

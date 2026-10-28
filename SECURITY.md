@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the latest released version of Opus.Interop receives security fixes. This project is pre-1.0, so
+Only the latest released version of LibOpus.Interop receives security fixes. This project is pre-1.0, so
 fixes land on the current minor rather than being backported.
 
 ## Reporting a vulnerability

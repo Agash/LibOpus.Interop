@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in Opus.Interop does not behave as documented.
+description: Something in LibOpus.Interop does not behave as documented.
 labels: ["bug"]
 body:
   - type: markdown

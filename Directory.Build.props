@@ -20,7 +20,7 @@
     <Copyright>Copyright (c) Agash 2026</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/Agash/Opus.Interop</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Agash/Opus.Interop</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Agash/LibOpus.Interop</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Agash/LibOpus.Interop</PackageProjectUrl>
   </PropertyGroup>
 </Project>

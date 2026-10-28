@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
-using Opus.Interop.Native;
-using NativeDecoder = Opus.Interop.Native.OpusDecoder;
-using NativeEncoder = Opus.Interop.Native.OpusEncoder;
+using LibOpus.Interop.Native;
+using NativeDecoder = LibOpus.Interop.Native.OpusDecoder;
+using NativeEncoder = LibOpus.Interop.Native.OpusEncoder;
 
-namespace Opus.Interop.Interop;
+namespace LibOpus.Interop.Interop;
 
 // Owns an NativeEncoder*; destroys it when released.
 internal sealed unsafe class SafeEncoderHandle() : SafeHandle(0, ownsHandle: true)
@@ -19,7 +19,7 @@ internal sealed unsafe class SafeEncoderHandle() : SafeHandle(0, ownsHandle: tru
     )
     {
         int error;
-        NativeEncoder* encoder = LibOpus.opus_encoder_create(
+        NativeEncoder* encoder = Opus.opus_encoder_create(
             sampleRate,
             channels,
             (int)application,
@@ -33,7 +33,7 @@ internal sealed unsafe class SafeEncoderHandle() : SafeHandle(0, ownsHandle: tru
 
     protected override bool ReleaseHandle()
     {
-        LibOpus.opus_encoder_destroy((NativeEncoder*)handle);
+        Opus.opus_encoder_destroy((NativeEncoder*)handle);
         return true;
     }
 }
@@ -48,7 +48,7 @@ internal sealed unsafe class SafeDecoderHandle() : SafeHandle(0, ownsHandle: tru
     public static SafeDecoderHandle Create(int sampleRate, int channels)
     {
         int error;
-        NativeDecoder* decoder = LibOpus.opus_decoder_create(sampleRate, channels, &error);
+        NativeDecoder* decoder = Opus.opus_decoder_create(sampleRate, channels, &error);
         _ = OpusException.ThrowIfError(error);
         SafeDecoderHandle owned = new();
         owned.SetHandle((nint)decoder);
@@ -57,7 +57,7 @@ internal sealed unsafe class SafeDecoderHandle() : SafeHandle(0, ownsHandle: tru
 
     protected override bool ReleaseHandle()
     {
-        LibOpus.opus_decoder_destroy((NativeDecoder*)handle);
+        Opus.opus_decoder_destroy((NativeDecoder*)handle);
         return true;
     }
 }

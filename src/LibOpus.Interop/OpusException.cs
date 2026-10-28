@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
-using Opus.Interop.Native;
+using LibOpus.Interop.Native;
 
-namespace Opus.Interop;
+namespace LibOpus.Interop;
 
 /// <summary>A call into libopus failed; <see cref="Error"/> says how.</summary>
 public sealed class OpusException : Exception
@@ -34,5 +34,5 @@ public sealed class OpusException : Exception
         result < 0 ? throw new OpusException((OpusError)result) : result;
 
     private static unsafe string Describe(OpusError error) =>
-        $"libopus: {Marshal.PtrToStringUTF8((nint)LibOpus.opus_strerror((int)error))} ({error}).";
+        $"libopus: {Marshal.PtrToStringUTF8((nint)Opus.opus_strerror((int)error))} ({error}).";
 }

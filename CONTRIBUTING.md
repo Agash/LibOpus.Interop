@@ -1,4 +1,4 @@
-# Contributing to Opus.Interop
+# Contributing to LibOpus.Interop
 
 Bug reports, reproductions, and small focused pull requests are welcome. Please open an issue before
 starting anything large, so we can agree on the shape before you spend time on it.
@@ -11,8 +11,8 @@ You need the .NET SDK pinned in [`global.json`](global.json), CMake 3.22 or late
 ```bash
 dotnet tool restore --disable-parallel
 cmake -P eng/build-native.cmake
-dotnet build Opus.Interop.slnx
-dotnet test --solution Opus.Interop.slnx
+dotnet build LibOpus.Interop.slnx
+dotnet test --solution LibOpus.Interop.slnx
 ```
 
 `build-native.cmake` builds libopus from the source pinned in [`generate/inputs.json`](generate/inputs.json)
@@ -33,7 +33,7 @@ handed that copy in place of this one.
 
 ## The bindings
 
-`src/Opus.Interop/Generated` is produced by `generate/Generate.cs` from the pinned libopus headers and
+`src/LibOpus.Interop/Generated` is produced by `generate/Generate.cs` from the pinned libopus headers and
 `native/src/opus_interop.h`. Never edit it by hand; change the generator and regenerate:
 
 ```bash
@@ -59,7 +59,7 @@ of lines and 80% of branches over CI's merged legs.
 - Warnings are errors, and the library builds with the recommended analyzer set. Fix the diagnostic
   rather than suppressing it; a suppression needs a comment saying why the rule does not apply.
 - Formatting is CSharpier's: `dotnet csharpier format .` before committing. CI checks it.
-- The library is Native AOT compatible. CI publishes and runs `samples/Opus.Interop.Smoke` with
+- The library is Native AOT compatible. CI publishes and runs `samples/LibOpus.Interop.Smoke` with
   `PublishAot` on every platform.
 - Every libopus signature is blittable, and the assembly disables runtime marshalling.
 - The managed API takes spans and returns counts. Nothing on an encode or decode path allocates; a test

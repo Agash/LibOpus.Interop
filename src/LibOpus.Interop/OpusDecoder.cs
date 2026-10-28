@@ -1,7 +1,7 @@
-using Opus.Interop.Interop;
-using static Opus.Interop.Native.LibOpus;
+using LibOpus.Interop.Interop;
+using static LibOpus.Interop.Native.Opus;
 
-namespace Opus.Interop;
+namespace LibOpus.Interop;
 
 /// <summary>
 /// An Opus decoder (libopus <c>OpusDecoder</c>): packets in, PCM out, with loss concealment for packets

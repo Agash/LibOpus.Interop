@@ -91,7 +91,7 @@ jobs:
           path: artifacts/native
 
       - name: Restore
-        run: dotnet restore Opus.Interop.slnx
+        run: dotnet restore LibOpus.Interop.slnx
 
       - name: Check formatting
         if: matrix.format
@@ -100,11 +100,11 @@ jobs:
           dotnet csharpier check .
 
       - name: Build
-        run: dotnet build Opus.Interop.slnx --no-restore -c Release
+        run: dotnet build LibOpus.Interop.slnx --no-restore -c Release
 
       - name: Test
         run: >-
-          dotnet test --solution Opus.Interop.slnx --no-build -c Release --settings tests.runsettings
+          dotnet test --solution LibOpus.Interop.slnx --no-build -c Release --settings tests.runsettings
           --coverage --coverage-settings coverage.settings.xml --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 
       - name: Upload coverage report
@@ -120,9 +120,9 @@ jobs:
       - name: Native AOT publish and run
         shell: pwsh
         run: |
-          dotnet publish samples/Opus.Interop.Smoke/Opus.Interop.Smoke.csproj -r ${{ matrix.rid }} -c Release -o artifacts/smoke
+          dotnet publish samples/LibOpus.Interop.Smoke/LibOpus.Interop.Smoke.csproj -r ${{ matrix.rid }} -c Release -o artifacts/smoke
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $binary = if ($IsWindows) { 'artifacts/smoke/Opus.Interop.Smoke.exe' } else { 'artifacts/smoke/Opus.Interop.Smoke' }
+          $binary = if ($IsWindows) { 'artifacts/smoke/LibOpus.Interop.Smoke.exe' } else { 'artifacts/smoke/LibOpus.Interop.Smoke' }
           & $binary
           exit $LASTEXITCODE
 
@@ -193,10 +193,10 @@ jobs:
       - name: Compare with the committed bindings
         shell: bash
         run: |
-          if ! git diff --quiet -- src/Opus.Interop/Generated \
-            || [ -n "$(git status --porcelain -- src/Opus.Interop/Generated)" ]; then
+          if ! git diff --quiet -- src/LibOpus.Interop/Generated \
+            || [ -n "$(git status --porcelain -- src/LibOpus.Interop/Generated)" ]; then
             echo "::error::The committed bindings differ from what generate/Generate.cs produces. Regenerate and commit."
-            git status --short -- src/Opus.Interop/Generated | head -50
+            git status --short -- src/LibOpus.Interop/Generated | head -50
             exit 1
           fi
 
@@ -228,7 +228,7 @@ jobs:
           merge-multiple: true
 
       - name: Pack
-        run: dotnet pack src/Opus.Interop/Opus.Interop.csproj -c Release -o ${{ env.NuGetDirectory }}
+        run: dotnet pack src/LibOpus.Interop/LibOpus.Interop.csproj -c Release -o ${{ env.NuGetDirectory }}
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4
@@ -250,7 +250,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: nuget.org
-      url: https://www.nuget.org/packages/Opus.Interop
+      url: https://www.nuget.org/packages/LibOpus.Interop
     permissions:
       contents: read
       id-token: write

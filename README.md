@@ -1,4 +1,4 @@
-# Opus.Interop
+# LibOpus.Interop
 
 .NET bindings for [libopus](https://opus-codec.org/) 1.6: an Opus encoder and decoder for .NET 11 with
 every control typed, over complete source-generated bindings to the library. libopus ships in
@@ -18,11 +18,11 @@ the package for Windows, Linux and macOS on x64 and arm64.
 ## Getting started
 
 ```bash
-dotnet add package Opus.Interop
+dotnet add package LibOpus.Interop
 ```
 
 ```csharp
-using Opus.Interop;
+using LibOpus.Interop;
 
 using var encoder = new OpusEncoder(48_000, channels: 2, OpusApplication.Audio)
 {
@@ -47,9 +47,9 @@ correction the next packet carries:
 int recovered = decoder.DecodeForwardErrorCorrection(nextPacket, decoded.AsSpan(0, 960 * 2));
 ```
 
-The bindings themselves are in `Opus.Interop.Native` under libopus's own names (`LibOpus.opus_encode`,
-`LibOpus.OPUS_SET_BITRATE_REQUEST`), for anything the managed layer does not cover yet; the controls go
-through `LibOpus.opus_interop_*_ctl*`, which are fixed-signature forms of libopus's variadic ones.
+The bindings themselves are in `LibOpus.Interop.Native` under libopus's own names (`Opus.opus_encode`,
+`Opus.OPUS_SET_BITRATE_REQUEST`), for anything the managed layer does not cover yet; the controls go
+through `Opus.opus_interop_*_ctl*`, which are fixed-signature forms of libopus's variadic ones.
 
 ## Building
 

@@ -1,4 +1,4 @@
-using Opus.Interop;
+using LibOpus.Interop;
 
 // Encodes and decodes a second of a stereo tone, as a Native AOT program, and fails unless the decoder
 // reproduces the encoder's range coder state for every packet: what CI runs to show the bindings work

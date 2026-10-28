@@ -12,6 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Opus.Interop\Opus.Interop.csproj" />
+    <ProjectReference Include="..\..\src\LibOpus.Interop\LibOpus.Interop.csproj" />
   </ItemGroup>
 </Project>

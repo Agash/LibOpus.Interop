@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
-using static Opus.Interop.Native.LibOpus;
+using static LibOpus.Interop.Native.Opus;
 
-namespace Opus.Interop;
+namespace LibOpus.Interop;
 
 /// <summary>What an Opus packet holds, read from its table of contents without decoding it.</summary>
 public static unsafe class OpusPacket

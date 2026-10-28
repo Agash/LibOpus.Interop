@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet
-// Regenerates src/Opus.Interop/Generated from the pinned libopus headers and the interop entry points
+// Regenerates src/LibOpus.Interop/Generated from the pinned libopus headers and the interop entry points
 // in native/src/opus_interop.h.
 //
 //   dotnet run generate/Generate.cs
@@ -37,7 +37,7 @@ const string LibClangSharpVersion = "22.1.8.2";
 string repoRoot = FindRepoRoot();
 string generateDir = Path.Combine(repoRoot, "generate");
 string cacheDir = Path.Combine(generateDir, ".cache");
-string outputRoot = Path.Combine(repoRoot, "src", "Opus.Interop", "Generated");
+string outputRoot = Path.Combine(repoRoot, "src", "LibOpus.Interop", "Generated");
 
 JsonObject opus = JsonNode.Parse(
     await File.ReadAllTextAsync(Path.Combine(generateDir, "inputs.json"))
@@ -83,9 +83,9 @@ List<string> rsp =
     "--header-file",
     headerFile,
     "--namespace",
-    "Opus.Interop.Native",
+    "LibOpus.Interop.Native",
     "--method-class-name",
-    "LibOpus",
+    "Opus",
     "--library-path",
     "opus-interop",
     "--language",

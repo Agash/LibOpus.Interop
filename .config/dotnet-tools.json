@@ -10,7 +10,7 @@
       "rollForward": false
     },
     "clangsharppinvokegenerator": {
-      "version": "21.1.8.4",
+      "version": "22.1.8",
       "commands": [
         "ClangSharpPInvokeGenerator"
       ],

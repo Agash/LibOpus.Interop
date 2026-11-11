@@ -5,4 +5,4 @@
 
 using System.CodeDom.Compiler;
 
-[assembly: GeneratedCode("ClangSharp", "21.1.8.4")]
+[assembly: GeneratedCode("ClangSharp", "22.1.8.0")]

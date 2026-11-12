@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Buffers.Binary;
 
 namespace LibOpus.Interop.Tests;
@@ -12,9 +13,8 @@ public sealed class OggOpusWriterTests
     public void Write_OneSecondOfSpeech_ProducesValidPagesThatDecode()
     {
         using OpusEncoder encoder = new(Rate, 1, OpusApplication.Voip) { Bitrate = 32_000 };
-        using MemoryStream output = new();
-        OggOpusWriter writer = new(output, channels: 1, inputSampleRate: 24_000, preSkip: encoder.Lookahead, serial: 7);
-        byte[] packet = new byte[OpusPacket.MaxFrameBytes];
+        ArrayBufferWriter<byte> output = new();
+        using OggOpusWriter writer = new(output, channels: 1, inputSampleRate: 24_000, preSkip: encoder.Lookahead, serial: 7);
         float[] pcm = new float[Frame];
         for (int f = 0; f < 50; f++)
         {
@@ -23,11 +23,11 @@ public sealed class OggOpusWriterTests
                 pcm[i] = (float)(0.3 * Math.Sin(2 * Math.PI * 300 * ((f * Frame) + i) / Rate));
             }
 
-            writer.WritePacket(packet.AsSpan(0, encoder.Encode(pcm, packet)));
+            writer.Advance(encoder.Encode(pcm, writer.GetPacketSpan()));
         }
 
         writer.Finish(sampleCount48k: (50 * Frame) - 100);
-        List<Page> pages = ReadPages(output.ToArray());
+        List<Page> pages = ReadPages(output.WrittenSpan.ToArray());
 
         Assert.IsGreaterThanOrEqualTo(3, pages.Count);
         Assert.AreEqual(0x02, pages[0].Flags, "the first page begins the stream");
@@ -53,16 +53,75 @@ public sealed class OggOpusWriterTests
     [TestMethod]
     public void WritePacket_LargePacketOfExactly255Bytes_EndsItsLacingWithZero()
     {
-        using MemoryStream output = new();
-        OggOpusWriter writer = new(output, 1, Rate, preSkip: 312, serial: 1);
+        ArrayBufferWriter<byte> output = new();
+        using OggOpusWriter writer = new(output, 1, Rate, preSkip: 312, serial: 1);
         byte[] packet = new byte[255];
         packet[0] = 0xF8; // CELT FB 20 ms, one frame: a valid TOC byte.
         writer.WritePacket(packet);
         writer.Finish();
 
-        Page last = ReadPages(output.ToArray())[^1];
+        Page last = ReadPages(output.WrittenSpan.ToArray())[^1];
         CollectionAssert.AreEqual(new byte[] { 255, 0 }, last.Lacing);
         Assert.AreEqual(255, last.Packets.Single().Length);
+    }
+
+    [TestMethod]
+    public void Write_ManyPackets_SpansPagesWithCountingSequenceAndRisingGranules()
+    {
+        using OpusEncoder encoder = new(Rate, 2, OpusApplication.Audio) { Bitrate = 256_000 };
+        ArrayBufferWriter<byte> output = new();
+        using OggOpusWriter writer = new(output, 2, Rate, preSkip: encoder.Lookahead, serial: 3);
+        float[] pcm = new float[Frame * 2];
+        Random noise = new(1);
+        for (int f = 0; f < 500; f++)
+        {
+            for (int i = 0; i < pcm.Length; i++)
+            {
+                pcm[i] = (float)((noise.NextDouble() * 2) - 1) * 0.5f;
+            }
+
+            writer.Advance(encoder.Encode(pcm, writer.GetPacketSpan()));
+        }
+
+        writer.Finish();
+        List<Page> pages = ReadPages(output.WrittenSpan.ToArray());
+
+        Assert.IsGreaterThan(10, pages.Count, "loud noise at 256 kbit/s fills many pages");
+        Assert.AreEqual(500, pages.Skip(2).Sum(static p => p.Packets.Count));
+        long previous = 0;
+        foreach (Page page in pages.Skip(2))
+        {
+            Assert.IsGreaterThan(previous, page.Granule);
+            previous = page.Granule;
+        }
+
+        Assert.AreEqual(encoder.Lookahead + (500L * Frame), pages[^1].Granule);
+    }
+
+    [TestMethod]
+    public void Advance_SteadyState_AllocatesNothing()
+    {
+        using OpusEncoder encoder = new(Rate, 1, OpusApplication.Voip) { Bitrate = 32_000 };
+        ArrayBufferWriter<byte> output = new(1 << 20);
+        using OggOpusWriter writer = new(output, 1, Rate, preSkip: encoder.Lookahead);
+        float[] pcm = new float[Frame];
+        for (int i = 0; i < pcm.Length; i++)
+        {
+            pcm[i] = (float)Math.Sin(i * 0.05) * 0.3f;
+        }
+
+        for (int f = 0; f < 20; f++)
+        {
+            writer.Advance(encoder.Encode(pcm, writer.GetPacketSpan()));
+        }
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        for (int f = 0; f < 500; f++)
+        {
+            writer.Advance(encoder.Encode(pcm, writer.GetPacketSpan()));
+        }
+
+        Assert.AreEqual(0, GC.GetAllocatedBytesForCurrentThread() - before, "bytes allocated while writing 500 packets");
     }
 
     private sealed record Page(byte Flags, long Granule, uint Serial, uint Sequence, byte[] Lacing, List<byte[]> Packets);

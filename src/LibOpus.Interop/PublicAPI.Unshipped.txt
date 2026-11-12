@@ -330,3 +330,8 @@ static extern LibOpus.Interop.Native.Opus.opus_repacketizer_init(LibOpus.Interop
 static extern LibOpus.Interop.Native.Opus.opus_repacketizer_out(LibOpus.Interop.Native.OpusRepacketizer* rp, byte* data, int maxlen) -> int
 static extern LibOpus.Interop.Native.Opus.opus_repacketizer_out_range(LibOpus.Interop.Native.OpusRepacketizer* rp, int begin, int end, byte* data, int maxlen) -> int
 static extern LibOpus.Interop.Native.Opus.opus_strerror(int error) -> sbyte*
+LibOpus.Interop.OggOpusWriter
+LibOpus.Interop.OggOpusWriter.Finish(long? sampleCount48k = null) -> void
+LibOpus.Interop.OggOpusWriter.OggOpusWriter(System.IO.Stream! output, int channels, int inputSampleRate, int preSkip, uint? serial = null, string! vendor = "LibOpus.Interop") -> void
+LibOpus.Interop.OggOpusWriter.PreSkip.get -> int
+LibOpus.Interop.OggOpusWriter.WritePacket(System.ReadOnlySpan<byte> packet) -> void
